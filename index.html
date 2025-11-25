@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc Nghiệm Văn Học - Hình Ảnh Người Lính</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, rgba(26, 42, 108, 0.9) 0%, rgba(58, 28, 113, 0.9) 100%);
+            /* Thêm ảnh nền soldier.jpg ở đây */
+            background-image: url('soldier.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: linear-gradient(to bottom, #f5f5dc, #e8e4c9);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            position: relative;
+            border: 2px solid #8B4513;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8B0000 0%, #B22222 100%);
+            color: #FFD700;
+            padding: 25px;
+            text-align: center;
+            border-bottom: 3px solid #8B4513;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .poem-box {
+            background: #f9f3e5;
+            padding: 20px;
+            margin: 20px;
+            border: 1px solid #8B4513;
+            border-radius: 8px;
+            font-style: italic;
+            line-height: 1.8;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-container {
+            padding: 0 30px 30px;
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .question-box {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #8B4513;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 2px solid #8B4513;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: #e7f3ff;
+            border-color: #1a2a6c;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            animation: correctPulse 0.5s ease;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .explanation {
+            background: #e7f3ff;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #1a2a6c;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .soldier-animation {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 150px;
+            z-index: 1000;
+            display: none;
+            animation: soldierAppear 1s ease;
+        }
+
+        @keyframes soldierAppear {
+            0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); }
+            50% { transform: translate(-50%, -50%) scale(1.2) rotate(10deg); }
+            100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+        }
+
+        .score-box {
+            background: linear-gradient(135deg, #8B0000 0%, #B22222 100%);
+            color: #FFD700;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            border: 2px solid #8B4513;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 30px 30px;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #8B0000 0%, #B22222 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #8B4513;
+        }
+
+        .nav-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(139, 0, 0, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            height: 12px;
+            border-radius: 6px;
+            margin: 20px;
+            overflow: hidden;
+            border: 1px solid #8B4513;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #8B0000 0%, #B22222 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .question-counter {
+            text-align: center;
+            font-size: 16px;
+            color: #8B0000;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .completion-message {
+            text-align: center;
+            padding: 30px;
+            display: none;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-message h2 {
+            color: #8B0000;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .final-score {
+            font-size: 22px;
+            font-weight: bold;
+            color: #1a2a6c;
+            margin: 20px 0;
+        }
+
+        .message {
+            font-size: 18px;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #1a2a6c 0%, #3a1c71 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            border: 2px solid #8B4513;
+        }
+
+        .restart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(26, 42, 108, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎖️ TRẮC NGHIỆM VĂN HỌC 🎖️</h1>
+            <p>Hình Ảnh Người Lính Trong "Ngày Về" - Chính Hữu</p>
+        </div>
+
+        <div class="poem-box">
+            <strong>Đoạn thơ gốc:</strong><br><br>
+            Nhớ đêm ra đi, đất trời bốc lửa<br>
+            Cả kinh thành nghi ngút cháy sau lưng<br>
+            Những chàng trai chưa trắng nợ anh hùng<br>
+            Hồn mười phương phất phơ cờ đỏ thắm<br>
+            Rách tả tơi rồi đôi giày vạn dặm<br>
+            Bụi trường chinh phai bạc áo hào hoa<br>
+            <em>(Trích Ngày về - Chính Hữu)</em>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+
+        <div class="score-box" id="scoreBox">
+            Điểm: <span id="score">0</span>/8
+        </div>
+
+        <div class="question-counter" id="questionCounter">Câu 1/8</div>
+
+        <div class="question-container active" id="question-0">
+            <div class="question-box">
+                <div class="question-title">Câu 1. Đoạn thơ trên thuộc thể loại văn học nào?</div>
+                <div class="options">
+                    <div class="option" onclick="selectAnswer(0, 0)">A. Thơ trữ tình</div>
+                    <div class="option" onclick="selectAnswer(0, 1)">B. Thơ tự sự</div>
+                    <div class="option" onclick="selectAnswer(0, 2)">C. Thơ chính luận</div>
+                    <div class="option" onclick="selectAnswer(0, 3)">D. Thơ trào phúng</div>
+                </div>
+                <div class="explanation" id="explanation-0">
+                    <strong>✅ Giải thích:</strong> Đoạn thơ bộc lộ cảm xúc, tâm trạng người lính; ngôn ngữ giàu hình ảnh, không kể chuyện → thuộc thơ trữ tình.
+                </div>
+            </div>
+        </div>
+
+        <div class="question-container" id="question-1">
+            <div class="question-box">
+                <div class="question-title">Câu 2. Hình ảnh 'đất trời bốc lửa' gợi không khí của thời kỳ nào?</div>
+                <div class="options">
+                    <div class="option" onclick="selectAnswer(1, 0)">A. Thời kỳ dựng nước</div>
+                    <div class="option" onclick="selectAnswer(1, 1)">B. Thời kỳ chiến tranh cách mạng</div>
+                    <div class="option" onclick="selectAnswer(1, 2)">C. Thời kỳ đổi mới</div>
+                    <div class="option" onclick="selectAnswer(1, 3)">D. Thời bình hiện đại</div>
+                </div>
+                <div class="explanation" id="explanation-1">
+                    <strong>✅ Giải thích:</strong> 'Đất trời bốc lửa' gợi không khí bom đạn, cuộc chiến ác liệt của thời kỳ chiến tranh cách mạng.
+                </div>
+            </div>
+        </div>
+
+        <div class="question-container" id="question-2">
+            <div class="question-box">
+                <div class="question-title">Câu 3. Cảm xúc chủ đạo của đoạn thơ là gì?</div>
+                <div class="options">
+                    <div class="option" onclick="selectAnswer(2, 0)">A. Buồn bã, bi lụy trước gian khổ</div>
+                    <div class="option" onclick="selectAnswer(2, 1)">B. Tự hào, hào sảng trong không khí chiến đấu</div>
+                    <div class="option" onclick="selectAnswer(2, 2)">C. Lo lắng, hoang mang trước tương lai</div>
+                    <div class="option" onclick="selectAnswer(2, 3)">D. Lạnh lùng, vô cảm trước hiện thực</div>
+                </div>
+                <div class="explanation" id="explanation-2">
+                    <strong>✅ Giải thích:</strong> Hình ảnh mạnh mẽ, giàu khí thế chiến đấu tạo cảm xúc hào sảng, không bi lụy.
+                </div>
+            </div>
+        </div>
+
+        <div class="question-container" id="question-3">
+            <div class="question-box">
+                <div class="question-title">Câu 4. Từ ngữ nào trong đoạn thơ cho thấy người lính lên đường chiến đấu trong hoàn cảnh gian khổ?</div>
+                <div class="options">
+                    <div class="option" onclick="selectAnswer(3, 0)">A. 'hào hoa'</div>
+                    <div class="option" onclick="selectAnswer(3, 1)">B. 'phất phơ'</div>
+                    <div class="option" onclick="selectAnswer(3, 2)">C. 'vạn dặm'</div>
+                    <div class="option" onclick="selectAnswer(3, 3)">D. 'bốc lửa'</div>
+                </div>
+                <div class="explanation" id="explanation-3">
+                    <strong>✅ Giải thích:</strong> Thể hiện quãng đường hành quân dài, nhiều gian khổ.
+                </div>
+            </div>
+        </div>
+
+        <div class="question-container" id="question-4">
+            <div class="question-box">
+                <div class="question-title">Câu 5. Cụm từ 'chưa trắng nợ anh hùng' nói lên điều gì về người lính?</div>
+                <div class="options">
+                    <div class="option" onclick="selectAnswer(4, 0)">A. Họ còn nhiều món nợ vật chất</div>
+                    <div class="option" onclick="selectAnswer(4, 1)">B. Họ muốn chứng tỏ tài năng cá nhân</div>
+                    <div class="option" onclick="selectAnswer(4, 2)">C. Họ mang trong mình lý tưởng cống hiến cho Tổ quốc</div>
+                    <div class="option" onclick="selectAnswer(4, 3)">D. Họ chưa hài lòng với cuộc sống hiện tại</div>
+                </div>
+                <div class="explanation" id="explanation-4">
+                    <strong>✅ Giải thích:</strong> 'Chưa trắng nợ anh hùng' nghĩa là chưa trả xong nợ nước, cho thấy lý tưởng chiến đấu.
+                </div>
+            </div>
+        </div>
+
+        <div class="question-container" id="question-5">
+            <div class="question-box">
+                <div class="question-title">Câu 6. Bút pháp nghệ thuật nào được tác giả sử dụng nổi bật để khắc họa hình tượng người lính trong đoạn thơ?</div>
+                <div class="options">
+                    <div class="option" onclick="selectAnswer(5, 0)">A. Bút pháp hiện thực tả chi tiết đời sống</div>
+                    <div class="option" onclick="selectAnswer(5, 1)">B. Bút pháp tự sự giàu tính kể chuyện</div>
+                    <div class="option" onclick="selectAnswer(5, 2)">C. Bút pháp trào phúng nhằm tạo tiếng cười</div>
+                    <div class="option" onclick="selectAnswer(5, 3)">D. Bút pháp lãng mạn với hình ảnh giàu cảm xúc, mang tính tượng trưng</div>
+                </div>
+                <div class="explanation" id="explanation-5">
+                    <strong>✅ Giải thích:</strong> Sử dụng hình ảnh giàu cảm xúc, lý tưởng hóa người lính – đặc trưng của bút pháp lãng mạn.
+                </div>
+            </div>
+        </div>
+
+        <div class="question-container" id="question-6">
+            <div class="question-box">
+                <div class="question-title">Câu 7. Phong cách lãng mạn trong đoạn thơ được thể hiện chủ yếu qua yếu tố nào?</div>
+                <div class="options">
+                    <div class="option" onclick="selectAnswer(6, 0)">A. Miêu tả chân thực từng chi tiết đời sống</div>
+                    <div class="option" onclick="selectAnswer(6, 1)">B. Thể hiện lý tưởng, khát vọng lớn lao qua hình ảnh giàu cảm hứng</div>
+                    <div class="option" onclick="selectAnswer(6, 2)">C. Dùng ngôn ngữ đời thường, khẩu ngữ</div>
+                    <div class="option" onclick="selectAnswer(6, 3)">D. Kể lại câu chuyện chiến đấu cụ thể</div>
+                </div>
+                <div class="explanation" id="explanation-6">
+                    <strong>✅ Giải thích:</strong> Phong cách lãng mạn nhấn mạnh lý tưởng, khát vọng thông qua hình ảnh tượng trưng.
+                </div>
+            </div>
+        </div>
+
+        <div class="question-container" id="question-7">
+            <div class="question-box">
+                <div class="question-title">Câu 8. Đoạn thơ giúp khắc họa hình tượng người lính chủ yếu theo hướng nào?</div>
+                <div class="options">
+                    <div class="option" onclick="selectAnswer(7, 0)">A. Người lính bi quan, chán nản trước khó khăn</div>
+                    <div class="option" onclick="selectAnswer(7, 1)">B. Người lính sống hưởng thụ, yêu cái đẹp</div>
+                    <div class="option" onclick="selectAnswer(7, 2)">C. Người lính hào hoa nhưng chịu nhiều gian khổ trên đường hành quân</div>
+                    <div class="option" onclick="selectAnswer(7, 3)">D. Người lính chỉ quan tâm đến chiến thắng</div>
+                </div>
+                <div class="explanation" id="explanation-7">
+                    <strong>✅ Giải thích:</strong> Hình ảnh vừa đẹp, hào hoa vừa đầy gian truân ('rách tả tơi', 'vạn dặm').
+                </div>
+            </div>
+        </div>
+
+        <div class="completion-message" id="completionMessage">
+            <h2>🎖️ Chúc Mừng! 🎖️</h2>
+            <div class="final-score" id="finalScore"></div>
+            <div class="message" id="resultMessage"></div>
+            <button class="restart-btn" onclick="restartQuiz()">🔄 Làm Lại Bài Trắc Nghiệm</button>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="prevQuestion()" disabled>⬅ Câu Trước</button>
+            <button class="nav-btn" id="nextBtn" onclick="nextQuestion()">Câu Tiếp ➡</button>
+        </div>
+    </div>
+
+    <div class="soldier-animation" id="soldierAnim">🪖</div>
+
+    <script>
+        const questions = [
+            {
+                question: "Câu 1. Đoạn thơ trên thuộc thể loại văn học nào?",
+                options: ["A. Thơ trữ tình", "B. Thơ tự sự", "C. Thơ chính luận", "D. Thơ trào phúng"],
+                correct: 0,
+                explanation: "Đoạn thơ bộc lộ cảm xúc, tâm trạng người lính; ngôn ngữ giàu hình ảnh, không kể chuyện → thuộc thơ trữ tình."
+            },
+            {
+                question: "Câu 2. Hình ảnh 'đất trời bốc lửa' gợi không khí của thời kỳ nào?",
+                options: ["A. Thời kỳ dựng nước", "B. Thời kỳ chiến tranh cách mạng", "C. Thời kỳ đổi mới", "D. Thời bình hiện đại"],
+                correct: 1,
+                explanation: "'Đất trời bốc lửa' gợi không khí bom đạn, cuộc chiến ác liệt của thời kỳ chiến tranh cách mạng."
+            },
+            {
+                question: "Câu 3. Cảm xúc chủ đạo của đoạn thơ là gì?",
+                options: ["A. Buồn bã, bi lụy trước gian khổ", "B. Tự hào, hào sảng trong không khí chiến đấu", "C. Lo lắng, hoang mang trước tương lai", "D. Lạnh lùng, vô cảm trước hiện thực"],
+                correct: 1,
+                explanation: "Hình ảnh mạnh mẽ, giàu khí thế chiến đấu tạo cảm xúc hào sảng, không bi lụy."
+            },
+            {
+                question: "Câu 4. Từ ngữ nào trong đoạn thơ cho thấy người lính lên đường chiến đấu trong hoàn cảnh gian khổ?",
+                options: ["A. 'hào hoa'", "B. 'phất phơ'", "C. 'vạn dặm'", "D. 'bốc lửa'"],
+                correct: 2,
+                explanation: "Thể hiện quãng đường hành quân dài, nhiều gian khổ."
+            },
+            {
+                question: "Câu 5. Cụm từ 'chưa trắng nợ anh hùng' nói lên điều gì về người lính?",
+                options: ["A. Họ còn nhiều món nợ vật chất", "B. Họ muốn chứng tỏ tài năng cá nhân", "C. Họ mang trong mình lý tưởng cống hiến cho Tổ quốc", "D. Họ chưa hài lòng với cuộc sống hiện tại"],
+                correct: 2,
+                explanation: "'Chưa trắng nợ anh hùng' nghĩa là chưa trả xong nợ nước, cho thấy lý tưởng chiến đấu."
+            },
+            {
+                question: "Câu 6. Bút pháp nghệ thuật nào được tác giả sử dụng nổi bật để khắc họa hình tượng người lính trong đoạn thơ?",
+                options: ["A. Bút pháp hiện thực tả chi tiết đời sống", "B. Bút pháp tự sự giàu tính kể chuyện", "C. Bút pháp trào phúng nhằm tạo tiếng cười", "D. Bút pháp lãng mạn với hình ảnh giàu cảm xúc, mang tính tượng trưng"],
+                correct: 3,
+                explanation: "Sử dụng hình ảnh giàu cảm xúc, lý tưởng hóa người lính – đặc trưng của bút pháp lãng mạn."
+            },
+            {
+                question: "Câu 7. Phong cách lãng mạn trong đoạn thơ được thể hiện chủ yếu qua yếu tố nào?",
+                options: ["A. Miêu tả chân thực từng chi tiết đời sống", "B. Thể hiện lý tưởng, khát vọng lớn lao qua hình ảnh giàu cảm hứng", "C. Dùng ngôn ngữ đời thường, khẩu ngữ", "D. Kể lại câu chuyện chiến đấu cụ thể"],
+                correct: 1,
+                explanation: "Phong cách lãng mạn nhấn mạnh lý tưởng, khát vọng thông qua hình ảnh tượng trưng."
+            },
+            {
+                question: "Câu 8. Đoạn thơ giúp khắc họa hình tượng người lính chủ yếu theo hướng nào?",
+                options: ["A. Người lính bi quan, chán nản trước khó khăn", "B. Người lính sống hưởng thụ, yêu cái đẹp", "C. Người lính hào hoa nhưng chịu nhiều gian khổ trên đường hành quân", "D. Người lính chỉ quan tâm đến chiến thắng"],
+                correct: 2,
+                explanation: "Hình ảnh vừa đẹp, hào hoa vừa đầy gian truân ('rách tả tơi', 'vạn dặm')."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let score = 0;
+
+        // Tạo âm thanh
+        function playCorrectSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            // Tạo âm thanh hoan hô
+            oscillator.frequency.value = 523.25; // C5
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.8);
+
+            // Thêm âm thanh thứ hai để tạo hiệu ứng hoan hô
+            setTimeout(() => {
+                const osc2 = audioContext.createOscillator();
+                const gain2 = audioContext.createGain();
+                osc2.connect(gain2);
+                gain2.connect(audioContext.destination);
+                osc2.frequency.value = 659.25; // E5
+                osc2.type = 'sine';
+                gain2.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.6);
+                osc2.start();
+                osc2.stop(audioContext.currentTime + 0.6);
+            }, 200);
+        }
+
+        function playWrongSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            // Tạo âm thanh "ú ồ"
+            oscillator.frequency.value = 200;
+            oscillator.type = 'sawtooth';
+            
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+
+        function showSoldier() {
+            const soldier = document.getElementById('soldierAnim');
+            soldier.style.display = 'block';
+            setTimeout(() => {
+                soldier.style.display = 'none';
+            }, 1000);
+        }
+
+        function selectAnswer(qIndex, oIndex) {
+            if (userAnswers[qIndex] !== null) return;
+
+            userAnswers[qIndex] = oIndex;
+            const isCorrect = oIndex === questions[qIndex].correct;
+
+            // Đánh dấu đáp án
+            const options = document.querySelectorAll(`#question-${qIndex} .option`);
+            options.forEach((option, index) => {
+                option.classList.remove('selected', 'correct', 'wrong');
+                if (index === oIndex) {
+                    option.classList.add('selected');
+                    if (isCorrect) {
+                        option.classList.add('correct');
+                    } else {
+                        option.classList.add('wrong');
+                    }
+                }
+                if (index === questions[qIndex].correct) {
+                    option.classList.add('correct');
+                }
+            });
+
+            // Hiện giải thích
+            document.getElementById(`explanation-${qIndex}`).classList.add('show');
+
+            if (isCorrect) {
+                score++;
+                playCorrectSound();
+                showSoldier();
+            } else {
+                playWrongSound();
+            }
+
+            // Cập nhật điểm và progress
+            updateScore();
+            updateProgress();
+            updateNavigation();
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+        }
+
+        function updateProgress() {
+            const answered = userAnswers.filter(a => a !== null).length;
+            const percent = (answered / questions.length) * 100;
+            document.getElementById('progressBar').style.width = percent + '%';
+        }
+
+        function updateNavigation() {
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            
+            if (currentQuestion === questions.length - 1) {
+                document.getElementById('nextBtn').textContent = 'Kết Thúc';
+            } else {
+                document.getElementById('nextBtn').textContent = 'Câu Tiếp ➡';
+            }
+        }
+
+        function updateQuestionCounter() {
+            document.getElementById('questionCounter').textContent = `Câu ${currentQuestion + 1}/${questions.length}`;
+        }
+
+        function showQuestion(index) {
+            // Ẩn tất cả câu hỏi
+            document.querySelectorAll('.question-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            
+            // Hiện câu hỏi hiện tại
+            document.getElementById(`question-${index}`).classList.add('active');
+            
+            // Cập nhật counter
+            updateQuestionCounter();
+            
+            // Cập nhật nút điều hướng
+            updateNavigation();
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            } else {
+                showResults();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+            }
+        }
+
+        function showResults() {
+            // Ẩn tất cả câu hỏi
+            document.querySelectorAll('.question-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            
+            // Hiện thông báo hoàn thành
+            document.getElementById('completionMessage').classList.add('show');
+            
+            // Ẩn thanh điều hướng
+            document.querySelector('.navigation').style.display = 'none';
+            
+            // Hiển thị kết quả
+            const percent = (score / questions.length * 100).toFixed(1);
+            document.getElementById('finalScore').textContent = `Điểm của bạn: ${score}/${questions.length} (${percent}%)`;
+            
+            let message = '';
+            if (percent >= 90) {
+                message = '🎖️ Xuất sắc! Bạn hiểu rất sâu về hình ảnh người lính trong thơ ca!';
+            } else if (percent >= 70) {
+                message = '👏 Giỏi lắm! Bạn đã nắm vững kiến thức về tác phẩm!';
+            } else if (percent >= 50) {
+                message = '📚 Khá tốt! Hãy đọc thêm để hiểu sâu hơn về hình tượng người lính!';
+            } else {
+                message = '💪 Cần cố gắng thêm! Hãy đọc lại bài thơ và các giải thích để hiểu rõ hơn!';
+            }
+            
+            document.getElementById('resultMessage').textContent = message;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            userAnswers = new Array(questions.length).fill(null);
+            score = 0;
+            
+            // Đặt lại giao diện
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected', 'correct', 'wrong');
+            });
+            
+            document.querySelectorAll('.explanation').forEach(exp => {
+                exp.classList.remove('show');
+            });
+            
+            document.getElementById('completionMessage').classList.remove('show');
+            document.querySelector('.navigation').style.display = 'flex';
+            
+            updateScore();
+            updateProgress();
+            showQuestion(currentQuestion);
+        }
+
+        // Khởi tạo
+        showQuestion(currentQuestion);
+    </script>
+</body>
+</html>
