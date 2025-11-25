@@ -103,6 +103,46 @@
             box-shadow: 0 6px 20px rgba(139, 0, 0, 0.5);
         }
 
+        /* Nút nhạc trong màn hình bắt đầu */
+        .start-music-btn {
+            background: linear-gradient(135deg, #8B0000 0%, #B22222 100%);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            border: 2px solid #8B4513;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);
+        }
+
+        .start-music-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(139, 0, 0, 0.5);
+        }
+
+        /* Nút nhạc cố định (cho các màn hình khác) */
+        .fixed-music-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .fixed-music-btn:hover {
+            background-color: #45a049;
+        }
+
         .header {
             background: linear-gradient(135deg, #8B0000 0%, #B22222 100%);
             color: #FFD700;
@@ -444,6 +484,8 @@
             <h1 class="start-title">🎖️ THỰC HÀNH ĐỌC HIỂU 🎖️</h1>
             <p class="start-subtitle">Hình Ảnh Người Lính Trong "Ngày Về" - Chính Hữu</p>
             <button class="start-btn" onclick="startQuiz()">Bắt Đầu Làm Bài</button>
+            <!-- Nút nhạc trong màn hình bắt đầu -->
+            <button class="start-music-btn" id="startMusicBtn">🔈 Bật nhạc nền</button>
         </div>
     </div>
 
@@ -617,6 +659,9 @@
 
     <div class="soldier-animation" id="soldierAnim">🪖</div>
 
+    <!-- Nút nhạc cố định cho các màn hình khác -->
+    <button class="fixed-music-btn" id="fixedMusicBtn" style="display: none;">🔈 Bật nhạc</button>
+
     <script>
         const questions = [
             {
@@ -736,29 +781,58 @@
             }, 1000);
         }
 
-    // Tự động tải và phát nhạc nền
-    function loadBackgroundMusic() {
-        backgroundAudio = new Audio('soldier.mp3');
-        backgroundAudio.loop = true;
-        backgroundAudio.volume = 1;
-        
-        // Thử phát nhạc nền
-        backgroundAudio.play().catch(error => {
-            console.log('Không thể phát nhạc nền tự động:', error);
-        });
-    }
-
-    // Gọi hàm tải nhạc nền khi trang được tải
-    window.addEventListener('load', loadBackgroundMusic);
-
-    function startQuiz() {
-        document.getElementById('startScreen').style.display = 'none';
-        document.getElementById('quizContainer').style.display = 'block';
-        
-        // Dừng nhạc nền khi bắt đầu làm bài
-        if (backgroundAudio) {
-            backgroundAudio.pause();
+        // Tự động tải nhạc nền
+        function loadBackgroundMusic() {
+            backgroundAudio = new Audio('soldier.mp3');
+            backgroundAudio.loop = true;
+            backgroundAudio.volume = 0.5;
         }
+
+        // Hàm bật/tắt nhạc
+        function toggleMusic() {
+            if (!backgroundAudio) return;
+            
+            if (backgroundAudio.paused) {
+                backgroundAudio.play().catch(error => {
+                    console.log('Không thể phát nhạc:', error);
+                });
+                // Cập nhật cả hai nút
+                document.getElementById('startMusicBtn').textContent = '🔊 Tắt nhạc nền';
+                document.getElementById('fixedMusicBtn').textContent = '🔊 Tắt nhạc';
+            } else {
+                backgroundAudio.pause();
+                // Cập nhật cả hai nút
+                document.getElementById('startMusicBtn').textContent = '🔈 Bật nhạc nền';
+                document.getElementById('fixedMusicBtn').textContent = '🔈 Bật nhạc';
+            }
+        }
+
+        // Gọi hàm tải nhạc nền khi trang được tải
+        window.addEventListener('load', function() {
+            loadBackgroundMusic();
+            
+            // Thêm sự kiện cho nút nhạc trong màn hình bắt đầu
+            document.getElementById('startMusicBtn').addEventListener('click', toggleMusic);
+            
+            // Thêm sự kiện cho nút nhạc cố định
+            document.getElementById('fixedMusicBtn').addEventListener('click', toggleMusic);
+        });
+
+        function startQuiz() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('quizContainer').style.display = 'block';
+            
+            // Hiển thị nút nhạc cố định
+            document.getElementById('fixedMusicBtn').style.display = 'block';
+            
+            // Dừng nhạc nền khi bắt đầu làm bài
+            if (backgroundAudio) {
+                backgroundAudio.pause();
+                // Cập nhật cả hai nút
+                document.getElementById('startMusicBtn').textContent = '🔈 Bật nhạc nền';
+                document.getElementById('fixedMusicBtn').textContent = '🔈 Bật nhạc';
+            }
+
             
             // Hiển thị đồng hồ đếm ngược
             document.getElementById('timerBox').style.display = 'flex';
@@ -780,7 +854,7 @@
                 updateTimerDisplay();
                 
                 // Phát âm thanh tích tắc mỗi giây
-                if (timeLeft > 0 && timeLeft <= 20) {
+                if (timeLeft > 0 && timeLeft <= 6) {
                     playTickSound();
                 }
                 
@@ -982,6 +1056,9 @@
             document.querySelector('.progress-bar').style.display = 'block';
             document.getElementById('scoreBox').style.display = 'block';
             document.getElementById('questionCounter').style.display = 'block';
+            
+            // Ẩn nút nhạc cố định
+            document.getElementById('fixedMusicBtn').style.display = 'none';
             
             updateScore();
             updateProgress();
