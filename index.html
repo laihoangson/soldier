@@ -742,10 +742,18 @@
             backgroundAudio = new Audio('soldier.mp3');
             backgroundAudio.loop = true;
             backgroundAudio.volume = 0.5;
-            
+
+        // Thử phát nhạc nền
+            backgroundAudio.play().catch(error => {
+                console.log('Không thể phát nhạc nền tự động:', error);
+            });
+        }
+
+        // Gọi hàm tải nhạc nền khi trang được tải
+        window.addEventListener('load', loadBackgroundMusic);
+
             // Không tự động phát, đợi người dùng tương tác
             console.log('Nhạc nền đã tải, chờ tương tác người dùng...');
-        }
 
         // Thêm sự kiện click để kích hoạt âm thanh
         document.addEventListener('DOMContentLoaded', function() {
