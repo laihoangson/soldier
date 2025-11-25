@@ -737,16 +737,31 @@
         }
 
         // Tự động tải và phát nhạc nền
+        // Thay thế hàm loadBackgroundMusic() bằng:
         function loadBackgroundMusic() {
             backgroundAudio = new Audio('soldier.mp3');
             backgroundAudio.loop = true;
-            backgroundAudio.volume = 1;
+            backgroundAudio.volume = 0.5;
             
-            // Thử phát nhạc nền
-            backgroundAudio.play().catch(error => {
-                console.log('Không thể phát nhạc nền tự động:', error);
-            });
+            // Không tự động phát, đợi người dùng tương tác
+            console.log('Nhạc nền đã tải, chờ tương tác người dùng...');
         }
+
+        // Thêm sự kiện click để kích hoạt âm thanh
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cho phép phát nhạc khi người dùng click vào bất kỳ đâu
+            document.body.addEventListener('click', function initAudio() {
+                if (backgroundAudio && backgroundAudio.paused) {
+                    backgroundAudio.play().catch(error => {
+                        console.log('Lỗi phát nhạc:', error);
+                    });
+                }
+                // Xóa sự kiện sau khi đã kích hoạt
+                document.body.removeEventListener('click', initAudio);
+            });
+            
+            loadBackgroundMusic();
+        });
 
         // Gọi hàm tải nhạc nền khi trang được tải
         window.addEventListener('load', loadBackgroundMusic);
