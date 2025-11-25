@@ -342,6 +342,29 @@
             color: #FFD700;
         }
 
+        /* Nút pause */
+        .pause-btn {
+            background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #8B4513;
+            font-weight: bold;
+        }
+
+        .pause-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 3px 10px rgba(255, 165, 0, 0.4);
+        }
+
+        .pause-btn.paused {
+            background: linear-gradient(135deg, #32CD32 0%, #228B22 100%);
+        }
+
         .navigation {
             display: flex;
             justify-content: space-between;
@@ -512,6 +535,8 @@
             <span>⏱️ Thời gian còn lại:</span>
             <div class="timer" id="timer">20</div>
             <span>giây</span>
+            <!-- Nút pause -->
+            <button class="pause-btn" id="pauseBtn" onclick="toggleTimer()">⏸️ Tạm dừng</button>
         </div>
 
         <div class="progress-bar">
@@ -721,6 +746,7 @@
         let timeLeft = 20;
         let backgroundAudio = null;
         let isQuizActive = false; // Biến để kiểm soát âm thanh tích tắc
+        let isTimerPaused = false; // Biến để kiểm soát trạng thái pause của timer
 
         // Tạo AudioContext và master gain duy nhất
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -768,7 +794,7 @@
 
         // Âm tích tắc
         function playTickSound() {
-            if (isQuizActive) {
+            if (isQuizActive && !isTimerPaused) {
                 playNote(800, 'sine', 0.05, 1);
             }
         }
@@ -807,6 +833,22 @@
             }
         }
 
+        // Hàm bật/tắt timer
+        function toggleTimer() {
+            isTimerPaused = !isTimerPaused;
+            const pauseBtn = document.getElementById('pauseBtn');
+            
+            if (isTimerPaused) {
+                clearInterval(timer);
+                pauseBtn.textContent = '▶️ Tiếp tục';
+                pauseBtn.classList.add('paused');
+            } else {
+                startTimer();
+                pauseBtn.textContent = '⏸️ Tạm dừng';
+                pauseBtn.classList.remove('paused');
+            }
+        }
+
         // Gọi hàm tải nhạc nền khi trang được tải
         window.addEventListener('load', function() {
             loadBackgroundMusic();
@@ -839,36 +881,46 @@
             
             // Đặt trạng thái bài trắc nghiệm đang hoạt động
             isQuizActive = true;
+            isTimerPaused = false;
+            
+            // Reset nút pause
+            document.getElementById('pauseBtn').textContent = '⏸️ Tạm dừng';
+            document.getElementById('pauseBtn').classList.remove('paused');
             
             startTimer();
             showQuestion(currentQuestion);
         }
 
         function startTimer() {
-            timeLeft = 20;
             updateTimerDisplay();
             
             clearInterval(timer);
             timer = setInterval(() => {
-                timeLeft--;
-                updateTimerDisplay();
-                
-                // Phát âm thanh tích tắc mỗi giây
-                if (timeLeft > 0 && timeLeft <= 6) {
-                    playTickSound();
-                }
-                
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    // Tự động chọn sai nếu hết thời gian
-                    if (userAnswers[currentQuestion] === null) {
-                        selectAnswer(currentQuestion, -1); // -1 để đánh dấu là hết giờ
+                if (!isTimerPaused) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    
+                    // Phát âm thanh tích tắc mỗi giây
+                    if (timeLeft > 0 && timeLeft <= 10) {
+                        playTickSound();
+                    }
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        // Tự động chọn sai nếu hết thời gian
+                        if (userAnswers[currentQuestion] === null) {
+                            selectAnswer(currentQuestion, -1); // -1 để đánh dấu là hết giờ
+                        }
                     }
                 }
             }, 1000);
         }
 
         function resetTimer() {
+            timeLeft = 20;
+            isTimerPaused = false;
+            document.getElementById('pauseBtn').textContent = '⏸️ Tạm dừng';
+            document.getElementById('pauseBtn').classList.remove('paused');
             clearInterval(timer);
             startTimer();
         }
@@ -925,6 +977,7 @@
 
             // Dừng đồng hồ khi đã chọn đáp án
             clearInterval(timer);
+            isTimerPaused = false;
 
             // Cập nhật điểm và progress
             updateScore();
@@ -996,6 +1049,7 @@
         function showResults() {
             // Đặt trạng thái bài trắc nghiệm không còn hoạt động
             isQuizActive = false;
+            isTimerPaused = false;
             
             // Ẩn tất cả câu hỏi
             document.querySelectorAll('.question-container').forEach(container => {
@@ -1021,7 +1075,7 @@
             
             let message = '';
             if (percent >= 90) {
-                message = '🎖️ Xuất sắc! Bạn hiểu rất sâu về hình ảnh người lính trong thơ ca!';
+                message = '🎖️ Xuất sắc! Bạn hiểu rất sâu về hình ảnh người lính trong tác phẩm!';
             } else if (percent >= 70) {
                 message = '👏 Giỏi lắm! Bạn đã nắm vững kiến thức về tác phẩm!';
             } else if (percent >= 50) {
@@ -1075,6 +1129,7 @@
             
             // Đặt lại trạng thái bài trắc nghiệm
             isQuizActive = false;
+            isTimerPaused = false;
         }
  
         // Khởi tạo
