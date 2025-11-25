@@ -14,7 +14,6 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, rgba(26, 42, 108, 0.9) 0%, rgba(58, 28, 113, 0.9) 100%);
-            /* Thêm ảnh nền soldier.jpg ở đây */
             background-image: url('soldier.jpg');
             background-size: cover;
             background-position: center;
@@ -38,6 +37,72 @@
             border: 2px solid #8B4513;
         }
 
+        .start-screen {
+            padding: 60px 40px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+            background: linear-gradient(to bottom, rgba(245, 245, 220, 0.9), rgba(232, 228, 201, 0.9));
+        }
+
+        .start-title {
+            font-size: 2.8rem;
+            color: #8B0000;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: titleSparkle 3s ease-in-out infinite;
+            font-weight: bold;
+        }
+        
+        @keyframes titleSparkle {
+            0%, 100% {
+                text-shadow: 0 0 10px #52b788, 0 0 20px #d8f3dc, 0 0 30px #ffffff;
+                transform: scale(1);
+            }
+            50% {
+                text-shadow: 0 0 20px #52b788, 0 0 40px #d8f3dc, 0 0 60px #ffffff;
+                transform: scale(1.05);
+            }
+        }
+
+        .start-subtitle {
+            font-size: 1.5rem;
+            color: #1a2a6c;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .start-description {
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            max-width: 600px;
+            line-height: 1.7;
+            color: #333;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #8B0000 0%, #B22222 100%);
+            color: white;
+            border: none;
+            padding: 16px 50px;
+            font-size: 1.3rem;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            border: 2px solid #8B4513;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(139, 0, 0, 0.5);
+        }
+
         .header {
             background: linear-gradient(135deg, #8B0000 0%, #B22222 100%);
             color: #FFD700;
@@ -48,10 +113,11 @@
         }
 
         .header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            letter-spacing: 1px;
+            font-size: 2rem;
+            margin-bottom: 8px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: titleSparkle 3s ease-in-out infinite;
         }
 
         .header p {
@@ -68,6 +134,22 @@
             font-style: italic;
             line-height: 1.8;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .poem-line {
+            display: block;
+            text-align: left;
+            margin-bottom: 8px;
+            width: 100%;
+            text-indent: -2em;
+            padding-left: 2em;
+        }
+
+        .poem-container {
+            display: inline-block;
+            text-align: left;
+            max-width: 90%;
         }
 
         .question-container {
@@ -199,6 +281,27 @@
             border: 2px solid #8B4513;
         }
 
+        .timer-box {
+            background: linear-gradient(135deg, #1a2a6c 0%, #3a1c71 100%);
+            color: white;
+            padding: 10px 15px;
+            margin: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            border: 2px solid #8B4513;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .timer {
+            font-size: 24px;
+            color: #FFD700;
+        }
+
         .navigation {
             display: flex;
             justify-content: space-between;
@@ -255,69 +358,119 @@
 
         .completion-message {
             text-align: center;
-            padding: 30px;
+            padding: 50px 30px;
             display: none;
+            background: linear-gradient(to bottom, rgba(245, 245, 220, 0.95), rgba(232, 228, 201, 0.95));
+            min-height: 500px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .completion-message.show {
-            display: block;
+            display: flex;
             animation: fadeIn 0.5s ease;
         }
 
         .completion-message h2 {
             color: #8B0000;
-            margin-bottom: 20px;
-            font-size: 24px;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
         }
 
         .final-score {
-            font-size: 22px;
+            font-size: 2rem;
             font-weight: bold;
             color: #1a2a6c;
             margin: 20px 0;
+            background: linear-gradient(135deg, #8B0000 0%, #B22222 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 2px solid #8B4513;
         }
 
         .message {
-            font-size: 18px;
-            margin: 20px 0;
+            font-size: 1.3rem;
+            margin: 30px 0;
             line-height: 1.6;
+            max-width: 600px;
+            color: #333;
         }
 
         .restart-btn {
             background: linear-gradient(135deg, #1a2a6c 0%, #3a1c71 100%);
             color: white;
             border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            border-radius: 25px;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 30px;
             cursor: pointer;
             margin-top: 20px;
             transition: all 0.3s ease;
             border: 2px solid #8B4513;
+            font-weight: bold;
         }
 
         .restart-btn:hover {
             transform: scale(1.05);
             box-shadow: 0 5px 15px rgba(26, 42, 108, 0.4);
         }
+
+        .audio-control {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .audio-control label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #8B0000;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Trang mở đầu -->
+    <div class="container" id="startScreen">
+        <div class="start-screen">
+            <h1 class="start-title">🎖️ THỰC HÀNH ĐỌC HIỂU 🎖️</h1>
+            <p class="start-subtitle">Hình Ảnh Người Lính Trong "Ngày Về" - Chính Hữu</p>
+            <button class="start-btn" onclick="startQuiz()">Bắt Đầu Làm Bài</button>
+        </div>
+    </div>
+
+    <!-- Trang trắc nghiệm -->
+    <div class="container" id="quizContainer" style="display: none;">
         <div class="header">
-            <h1>🎖️ TRẮC NGHIỆM VĂN HỌC 🎖️</h1>
+            <h1>🎖️ THỰC HÀNH ĐỌC HIỂU 🎖️</h1>
             <p>Hình Ảnh Người Lính Trong "Ngày Về" - Chính Hữu</p>
         </div>
 
         <div class="poem-box">
-            <strong>Đoạn thơ gốc:</strong><br><br>
-            Nhớ đêm ra đi, đất trời bốc lửa<br>
-            Cả kinh thành nghi ngút cháy sau lưng<br>
-            Những chàng trai chưa trắng nợ anh hùng<br>
-            Hồn mười phương phất phơ cờ đỏ thắm<br>
-            Rách tả tơi rồi đôi giày vạn dặm<br>
-            Bụi trường chinh phai bạc áo hào hoa<br>
+            <strong>Đoạn thơ:</strong><br>
+            <div class="poem-container">
+                <span class="poem-line">Nhớ đêm ra đi, đất trời bốc lửa</span>
+                <span class="poem-line">Cả kinh thành nghi ngút cháy sau lưng</span>
+                <span class="poem-line">Những chàng trai chưa trắng nợ anh hùng</span>
+                <span class="poem-line">Hồn mười phương phất phơ cờ đỏ thắm</span>
+                <span class="poem-line">Rách tả tơi rồi đôi giày vạn dặm</span>
+                <span class="poem-line">Bụi trường chinh phai bạc áo hào hoa</span>
+            </div>
             <em>(Trích Ngày về - Chính Hữu)</em>
+        </div>
+
+        <div class="timer-box" id="timerBox" style="display: none;">
+            <span>⏱️ Thời gian còn lại:</span>
+            <div class="timer" id="timer">20</div>
+            <span>giây</span>
         </div>
 
         <div class="progress-bar">
@@ -520,58 +673,54 @@
         let currentQuestion = 0;
         let userAnswers = new Array(questions.length).fill(null);
         let score = 0;
+        let timer;
+        let timeLeft = 20;
+        let backgroundAudio = null;
+        let isQuizActive = false; // Biến để kiểm soát âm thanh tích tắc
 
-        // Tạo âm thanh
-        function playCorrectSound() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            // Tạo âm thanh hoan hô
-            oscillator.frequency.value = 523.25; // C5
-            oscillator.type = 'sine';
-            
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.8);
+        // Tạo AudioContext và master gain duy nhất
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const masterGain = audioContext.createGain();
+        masterGain.gain.value = 15;
+        masterGain.connect(audioContext.destination);
 
-            // Thêm âm thanh thứ hai để tạo hiệu ứng hoan hô
-            setTimeout(() => {
-                const osc2 = audioContext.createOscillator();
-                const gain2 = audioContext.createGain();
-                osc2.connect(gain2);
-                gain2.connect(audioContext.destination);
-                osc2.frequency.value = 659.25; // E5
-                osc2.type = 'sine';
-                gain2.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.6);
-                osc2.start();
-                osc2.stop(audioContext.currentTime + 0.6);
-            }, 200);
+        // Hàm tạo và chơi một nốt
+        function playNote(freq, type = 'sine', duration = 0.3, volume = 1.0) {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+
+            osc.frequency.value = freq;
+            osc.type = type;
+
+            osc.connect(gain);
+            gain.connect(masterGain);
+
+            gain.gain.setValueAtTime(volume, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+
+            osc.start();
+            osc.stop(audioContext.currentTime + duration);
         }
 
+        // Âm thành công
+        function playCorrectSound() {
+            playNote(523.25, 'sine', 0.3, 1.2);
+            setTimeout(() => playNote(659.25, 'sine', 0.3, 1.2), 150);
+            setTimeout(() => playNote(783.99, 'sine', 0.5, 1.4), 300);
+        }
+
+        // Âm thất bại
         function playWrongSound() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            // Tạo âm thanh "ú ồ"
-            oscillator.frequency.value = 200;
-            oscillator.type = 'sawtooth';
-            
-            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.5);
+            playNote(400, 'square', 0.15, 1.2);
+            setTimeout(() => playNote(300, 'square', 0.15, 1.2), 150);
+            setTimeout(() => playNote(250, 'square', 0.20, 1.3), 300);
+        }
+
+        // Âm thanh tích tắc cho đồng hồ
+        function playTickSound() {
+            if (isQuizActive) {
+                playNote(800, 'sine', 0.05, 0.3);
+            }
         }
 
         function showSoldier() {
@@ -580,6 +729,82 @@
             setTimeout(() => {
                 soldier.style.display = 'none';
             }, 1000);
+        }
+
+        // Tự động tải và phát nhạc nền
+        function loadBackgroundMusic() {
+            backgroundAudio = new Audio('soldier.mp3');
+            backgroundAudio.loop = true;
+            backgroundAudio.volume = 1;
+            
+            // Thử phát nhạc nền
+            backgroundAudio.play().catch(error => {
+                console.log('Không thể phát nhạc nền tự động:', error);
+            });
+        }
+
+        // Gọi hàm tải nhạc nền khi trang được tải
+        window.addEventListener('load', loadBackgroundMusic);
+
+        function startQuiz() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('quizContainer').style.display = 'block';
+            
+            // Dừng nhạc nền khi bắt đầu làm bài
+            if (backgroundAudio) {
+                backgroundAudio.pause();
+            }
+            
+            // Hiển thị đồng hồ đếm ngược
+            document.getElementById('timerBox').style.display = 'flex';
+            
+            // Đặt trạng thái bài trắc nghiệm đang hoạt động
+            isQuizActive = true;
+            
+            startTimer();
+            showQuestion(currentQuestion);
+        }
+
+        function startTimer() {
+            timeLeft = 20;
+            updateTimerDisplay();
+            
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                // Phát âm thanh tích tắc mỗi giây
+                if (timeLeft > 0 && timeLeft <= 20) {
+                    playTickSound();
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    // Tự động chọn sai nếu hết thời gian
+                    if (userAnswers[currentQuestion] === null) {
+                        selectAnswer(currentQuestion, -1); // -1 để đánh dấu là hết giờ
+                    }
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            clearInterval(timer);
+            startTimer();
+        }
+
+        function updateTimerDisplay() {
+            document.getElementById('timer').textContent = timeLeft;
+            
+            // Thay đổi màu sắc khi thời gian sắp hết
+            if (timeLeft <= 5) {
+                document.getElementById('timer').style.color = '#FF0000';
+            } else if (timeLeft <= 10) {
+                document.getElementById('timer').style.color = '#FFA500';
+            } else {
+                document.getElementById('timer').style.color = '#FFD700';
+            }
         }
 
         function selectAnswer(qIndex, oIndex) {
@@ -615,6 +840,9 @@
             } else {
                 playWrongSound();
             }
+
+            // Dừng đồng hồ khi đã chọn đáp án
+            clearInterval(timer);
 
             // Cập nhật điểm và progress
             updateScore();
@@ -660,6 +888,11 @@
             
             // Cập nhật nút điều hướng
             updateNavigation();
+            
+            // Reset đồng hồ nếu câu hỏi chưa được trả lời
+            if (userAnswers[currentQuestion] === null) {
+                resetTimer();
+            }
         }
 
         function nextQuestion() {
@@ -679,10 +912,20 @@
         }
 
         function showResults() {
+            // Đặt trạng thái bài trắc nghiệm không còn hoạt động
+            isQuizActive = false;
+            
             // Ẩn tất cả câu hỏi
             document.querySelectorAll('.question-container').forEach(container => {
                 container.classList.remove('active');
             });
+            
+            // Ẩn đoạn thơ và đồng hồ
+            document.querySelector('.poem-box').style.display = 'none';
+            document.getElementById('timerBox').style.display = 'none';
+            document.querySelector('.progress-bar').style.display = 'none';
+            document.getElementById('scoreBox').style.display = 'none';
+            document.getElementById('questionCounter').style.display = 'none';
             
             // Hiện thông báo hoàn thành
             document.getElementById('completionMessage').classList.add('show');
@@ -725,13 +968,32 @@
             document.getElementById('completionMessage').classList.remove('show');
             document.querySelector('.navigation').style.display = 'flex';
             
+            // Hiển thị lại các phần tử đã ẩn
+            document.querySelector('.poem-box').style.display = 'block';
+            document.getElementById('timerBox').style.display = 'flex';
+            document.querySelector('.progress-bar').style.display = 'block';
+            document.getElementById('scoreBox').style.display = 'block';
+            document.getElementById('questionCounter').style.display = 'block';
+            
             updateScore();
             updateProgress();
             showQuestion(currentQuestion);
+            
+            // Quay lại trang mở đầu
+            document.getElementById('startScreen').style.display = 'block';
+            document.getElementById('quizContainer').style.display = 'none';
+            
+            // Phát lại nhạc nền
+            if (backgroundAudio) {
+                backgroundAudio.play();
+            }
+            
+            // Đặt lại trạng thái bài trắc nghiệm
+            isQuizActive = false;
         }
 
         // Khởi tạo
-        showQuestion(currentQuestion);
+        updateScore();
     </script>
 </body>
 </html>
