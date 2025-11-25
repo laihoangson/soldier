@@ -683,18 +683,22 @@
         masterGain.gain.value = 15;
         masterGain.connect(audioContext.destination);
 
+        // Biến toàn cục để chỉnh âm lượng chung
+        let masterVolume = 0.05; // chỉnh ở đây là toàn bộ âm thanh theo
+
         // Hàm tạo và chơi một nốt
-        function playNote(freq, type = 'sine', duration = 0.3, volume = 0.7) {
-            const osc = audioContext.createOscillator();
+        function playNote(freq, type = 'sine', duration = 0.3, volume = 1) {
+            const osc = audioContext.createOscillator(); 
             const gain = audioContext.createGain();
 
-            osc.frequency.value = freq;
+            osc.frequency.value = freq; 
             osc.type = type;
 
             osc.connect(gain);
             gain.connect(masterGain);
 
-            gain.gain.setValueAtTime(volume, audioContext.currentTime);
+            // Nhân volume riêng với masterVolume
+            gain.gain.setValueAtTime(volume * masterVolume, audioContext.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
 
             osc.start();
@@ -703,25 +707,24 @@
 
         // Âm thành công
         function playCorrectSound() {
-            playNote(523.25, 'sine', 0.3, 1.2);
-            setTimeout(() => playNote(659.25, 'sine', 0.3, 1.2), 150);
-            setTimeout(() => playNote(783.99, 'sine', 0.5, 1.4), 300);
+            playNote(523.25, 'sine', 0.3, 1); // volume nốt riêng
+            setTimeout(() => playNote(659.25, 'sine', 0.3, 1), 150);
+            setTimeout(() => playNote(783.99, 'sine', 0.5, 1), 300);
         }
 
-        // Âm thất bại - CHỈ ĐƯỢC SỬ DỤNG TRONG QUÁ TRÌNH LÀM BÀI
+        // Âm thất bại
         function playWrongSound() {
-            // Chỉ phát âm thanh thua cuộc khi đang làm bài trắc nghiệm
             if (isQuizActive) {
-                playNote(400, 'square', 0.15, 1.2);
-                setTimeout(() => playNote(300, 'square', 0.15, 1.2), 150);
-                setTimeout(() => playNote(250, 'square', 0.20, 1.3), 300);
+                playNote(400, 'square', 0.15, 1);
+                setTimeout(() => playNote(300, 'square', 0.15, 1), 150);
+                setTimeout(() => playNote(250, 'square', 0.20, 1), 300);
             }
         }
 
-        // Âm thanh tích tắc cho đồng hồ
+        // Âm tích tắc
         function playTickSound() {
             if (isQuizActive) {
-                playNote(800, 'sine', 0.05, 0.3);
+                playNote(800, 'sine', 0.05, 1);
             }
         }
 
@@ -777,7 +780,7 @@
                 updateTimerDisplay();
                 
                 // Phát âm thanh tích tắc mỗi giây
-                if (timeLeft > 0 && timeLeft <= 15) {
+                if (timeLeft > 0 && timeLeft <= 20) {
                     playTickSound();
                 }
                 
