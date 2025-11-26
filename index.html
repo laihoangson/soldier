@@ -38,7 +38,7 @@
         }
 
         .start-screen {
-            padding: 60px 40px;
+            padding: 40px;
             text-align: center;
             display: flex;
             flex-direction: column;
@@ -77,7 +77,7 @@
 
         .start-description {
             font-size: 1.1rem;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             max-width: 600px;
             line-height: 1.7;
             color: #333;
@@ -175,6 +175,19 @@
             line-height: 1.8;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
+        }
+
+         .poem-box2 {
+            background: #f9f3e5;
+            padding: 20px;
+            margin: 20px;
+            border: 1px solid #8B4513;
+            border-radius: 8px;
+            font-style: italic;
+            line-height: 1.8;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 400px
         }
 
         .poem-line {
@@ -342,8 +355,8 @@
             color: #FFD700;
         }
 
-        /* Nút pause */
-        .pause-btn {
+        /* Nút timer control */
+        .timer-control-btn {
             background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
             color: white;
             border: none;
@@ -356,12 +369,12 @@
             font-weight: bold;
         }
 
-        .pause-btn:hover {
+        .timer-control-btn:hover {
             transform: scale(1.05);
             box-shadow: 0 3px 10px rgba(255, 165, 0, 0.4);
         }
 
-        .pause-btn.paused {
+        .timer-control-btn.started {
             background: linear-gradient(135deg, #32CD32 0%, #228B22 100%);
         }
 
@@ -505,7 +518,21 @@
     <div class="container" id="startScreen">
         <div class="start-screen">
             <h1 class="start-title">🎖️ THỰC HÀNH ĐỌC HIỂU 🎖️</h1>
-            <p class="start-subtitle">Hình Ảnh Người Lính Trong "Ngày Về" - Chính Hữu</p>
+            <p class="start-subtitle">Hình Ảnh Người Lính Trong Đoạn Trích "Ngày Về" - Chính Hữu</p>
+            
+            <!-- Đoạn thơ thêm vào màn hình bắt đầu -->
+            <div class="poem-box2">
+                <strong>Đoạn thơ:</strong><br>
+                <div class="poem-container">
+                    <span class="poem-line">Nhớ đêm ra đi, đất trời bốc lửa</span>
+                    <span class="poem-line">Cả kinh thành nghi ngút cháy sau lưng</span>
+                    <span class="poem-line">Những chàng trai chưa trắng nợ anh hùng</span>
+                    <span class="poem-line">Hồn mười phương phất phơ cờ đỏ thắm</span>
+                    <span class="poem-line">Rách tả tơi rồi đôi giày vạn dặm</span>
+                    <span class="poem-line">Bụi trường chinh phai bạc áo hào hoa</span>
+                </div>
+            </div>
+            
             <button class="start-btn" onclick="startQuiz()">Bắt Đầu Làm Bài</button>
             <!-- Nút nhạc trong màn hình bắt đầu -->
             <button class="start-music-btn" id="startMusicBtn">🔈 Bật nhạc nền</button>
@@ -516,7 +543,7 @@
     <div class="container" id="quizContainer" style="display: none;">
         <div class="header">
             <h1>🎖️ THỰC HÀNH ĐỌC HIỂU 🎖️</h1>
-            <p>Hình Ảnh Người Lính Trong "Ngày Về" - Chính Hữu</p>
+            <p>Hình Ảnh Người Lính Trong Đoạn Trích "Ngày Về" - Chính Hữu</p>
         </div>
 
         <div class="poem-box">
@@ -535,8 +562,8 @@
             <span>⏱️ Thời gian còn lại:</span>
             <div class="timer" id="timer">20</div>
             <span>giây</span>
-            <!-- Nút pause -->
-            <button class="pause-btn" id="pauseBtn" onclick="toggleTimer()">⏸️ Tạm dừng</button>
+            <!-- Nút điều khiển timer -->
+            <button class="timer-control-btn" id="timerControlBtn" onclick="toggleTimer()">▶️ Bắt đầu</button>
         </div>
 
         <div class="progress-bar">
@@ -745,7 +772,7 @@
         let timeLeft = 20;
         let backgroundAudio = null;
         let isQuizActive = false; // Biến để kiểm soát âm thanh tích tắc
-        let isTimerPaused = false; // Biến để kiểm soát trạng thái pause của timer
+        let isTimerRunning = false; // Biến để kiểm soát trạng thái chạy của timer
 
         // Tạo AudioContext và master gain duy nhất
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -793,7 +820,7 @@
 
         // Âm tích tắc
         function playTickSound() {
-            if (isQuizActive && !isTimerPaused) {
+            if (isQuizActive && isTimerRunning) {
                 playNote(800, 'sine', 0.05, 1);
             }
         }
@@ -834,17 +861,20 @@
 
         // Hàm bật/tắt timer
         function toggleTimer() {
-            isTimerPaused = !isTimerPaused;
-            const pauseBtn = document.getElementById('pauseBtn');
+            const timerControlBtn = document.getElementById('timerControlBtn');
             
-            if (isTimerPaused) {
-                clearInterval(timer);
-                pauseBtn.textContent = '▶️ Tiếp tục';
-                pauseBtn.classList.add('paused');
-            } else {
+            if (!isTimerRunning) {
+                // Bắt đầu timer
+                isTimerRunning = true;
+                timerControlBtn.textContent = '⏸️ Tạm dừng';
+                timerControlBtn.classList.add('started');
                 startTimer();
-                pauseBtn.textContent = '⏸️ Tạm dừng';
-                pauseBtn.classList.remove('paused');
+            } else {
+                // Tạm dừng timer
+                isTimerRunning = false;
+                timerControlBtn.textContent = '▶️ Tiếp tục';
+                timerControlBtn.classList.remove('started');
+                clearInterval(timer);
             }
         }
 
@@ -880,13 +910,15 @@
             
             // Đặt trạng thái bài trắc nghiệm đang hoạt động
             isQuizActive = true;
-            isTimerPaused = false;
+            isTimerRunning = false;
             
-            // Reset nút pause
-            document.getElementById('pauseBtn').textContent = '⏸️ Tạm dừng';
-            document.getElementById('pauseBtn').classList.remove('paused');
+            // Reset nút timer control
+            document.getElementById('timerControlBtn').textContent = '▶️ Bắt đầu';
+            document.getElementById('timerControlBtn').classList.remove('started');
             
-            startTimer();
+            // Khởi tạo timer nhưng chưa chạy
+            updateTimerDisplay();
+            
             showQuestion(currentQuestion);
         }
 
@@ -895,7 +927,7 @@
             
             clearInterval(timer);
             timer = setInterval(() => {
-                if (!isTimerPaused) {
+                if (isTimerRunning) {
                     timeLeft--;
                     updateTimerDisplay();
                     
@@ -906,6 +938,7 @@
                     
                     if (timeLeft <= 0) {
                         clearInterval(timer);
+                        isTimerRunning = false;
                         // Tự động chọn sai nếu hết thời gian
                         if (userAnswers[currentQuestion] === null) {
                             selectAnswer(currentQuestion, -1); // -1 để đánh dấu là hết giờ
@@ -917,11 +950,11 @@
 
         function resetTimer() {
             timeLeft = 20;
-            isTimerPaused = false;
-            document.getElementById('pauseBtn').textContent = '⏸️ Tạm dừng';
-            document.getElementById('pauseBtn').classList.remove('paused');
+            isTimerRunning = false;
+            document.getElementById('timerControlBtn').textContent = '▶️ Bắt đầu';
+            document.getElementById('timerControlBtn').classList.remove('started');
             clearInterval(timer);
-            startTimer();
+            updateTimerDisplay();
         }
 
         function updateTimerDisplay() {
@@ -976,7 +1009,9 @@
 
             // Dừng đồng hồ khi đã chọn đáp án
             clearInterval(timer);
-            isTimerPaused = false;
+            isTimerRunning = false;
+            document.getElementById('timerControlBtn').textContent = '▶️ Bắt đầu';
+            document.getElementById('timerControlBtn').classList.remove('started');
 
             // Cập nhật điểm và progress
             updateScore();
@@ -1048,7 +1083,7 @@
         function showResults() {
             // Đặt trạng thái bài trắc nghiệm không còn hoạt động
             isQuizActive = false;
-            isTimerPaused = false;
+            isTimerRunning = false;
             
             // Ẩn tất cả câu hỏi
             document.querySelectorAll('.question-container').forEach(container => {
@@ -1128,7 +1163,7 @@
             
             // Đặt lại trạng thái bài trắc nghiệm
             isQuizActive = false;
-            isTimerPaused = false;
+            isTimerRunning = false;
         }
  
         // Khởi tạo
